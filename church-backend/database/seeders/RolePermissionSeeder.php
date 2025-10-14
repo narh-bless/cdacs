@@ -66,7 +66,10 @@ class RolePermissionSeeder extends Seeder
         ];
 
         foreach ($permissions as $permission) {
-            Permission::create($permission);
+            Permission::firstOrCreate(
+                ['name' => $permission['name']],
+                $permission
+            );
         }
 
         // Create roles
@@ -148,8 +151,13 @@ class RolePermissionSeeder extends Seeder
             $permissions = $roleData['permissions'];
             unset($roleData['permissions']);
             
-            $role = Role::create($roleData);
-            $role->permissions()->attach(
+            $role = Role::firstOrCreate(
+                ['name' => $roleData['name']],
+                $roleData
+            );
+            
+            // Sync permissions (this will add/remove as needed)
+            $role->permissions()->sync(
                 Permission::whereIn('name', $permissions)->pluck('id')
             );
         }

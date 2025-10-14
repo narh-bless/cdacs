@@ -16,7 +16,9 @@ class UserSeeder extends Seeder
     public function run(): void
     {
         // Create admin user
-        $admin = User::create([
+        $admin = User::firstOrCreate(
+            ['email' => 'admin@church.com'],
+            [
             'first_name' => 'Admin',
             'last_name' => 'User',
             'email' => 'admin@church.com',
@@ -25,12 +27,15 @@ class UserSeeder extends Seeder
             'membership_date' => now()->subYears(5),
             'membership_status' => 'active',
             'is_active' => true,
-        ]);
+            ]
+        );
 
-        $admin->roles()->attach(Role::where('name', 'administrator')->first()->id);
+        $admin->roles()->syncWithoutDetaching([Role::where('name', 'administrator')->first()->id]);
 
         // Create pastor user
-        $pastor = User::create([
+        $pastor = User::firstOrCreate(
+            ['email' => 'pastor@church.com'],
+            [
             'first_name' => 'John',
             'last_name' => 'Pastor',
             'email' => 'pastor@church.com',
@@ -40,24 +45,28 @@ class UserSeeder extends Seeder
             'membership_status' => 'active',
             'is_active' => true,
             'bio' => 'Senior Pastor with over 10 years of ministry experience.',
-        ]);
+            ]
+        );
 
-        $pastor->roles()->attach(Role::where('name', 'pastor')->first()->id);
+        $pastor->roles()->syncWithoutDetaching([Role::where('name', 'pastor')->first()->id]);
 
         // Create finance committee member
-        $financeMember = User::create([
-            'first_name' => 'Sarah',
-            'last_name' => 'Finance',
-            'email' => 'finance@church.com',
-            'password' => Hash::make('password'),
-            'phone' => '+1234567892',
-            'membership_date' => now()->subYears(3),
-            'membership_status' => 'active',
-            'is_active' => true,
-            'bio' => 'Finance Committee member responsible for financial oversight.',
-        ]);
+        $financeMember = User::firstOrCreate(
+            ['email' => 'finance@church.com'],
+            [
+                'first_name' => 'Sarah',
+                'last_name' => 'Finance',
+                'email' => 'finance@church.com',
+                'password' => Hash::make('password'),
+                'phone' => '+1234567892',
+                'membership_date' => now()->subYears(3),
+                'membership_status' => 'active',
+                'is_active' => true,
+                'bio' => 'Finance Committee member responsible for financial oversight.',
+            ]
+        );
 
-        $financeMember->roles()->attach(Role::where('name', 'finance_committee')->first()->id);
+        $financeMember->roles()->syncWithoutDetaching([Role::where('name', 'finance_committee')->first()->id]);
 
         // Create regular members
         $members = [
@@ -99,19 +108,22 @@ class UserSeeder extends Seeder
         ];
 
         foreach ($members as $memberData) {
-            $member = User::create([
-                'first_name' => $memberData['first_name'],
-                'last_name' => $memberData['last_name'],
-                'email' => $memberData['email'],
-                'password' => Hash::make('password'),
-                'phone' => $memberData['phone'],
-                'membership_date' => now()->subMonths(rand(1, 24)),
-                'membership_status' => 'active',
-                'is_active' => true,
-                'bio' => $memberData['bio'],
-            ]);
+            $member = User::firstOrCreate(
+                ['email' => $memberData['email']],
+                [
+                    'first_name' => $memberData['first_name'],
+                    'last_name' => $memberData['last_name'],
+                    'email' => $memberData['email'],
+                    'password' => Hash::make('password'),
+                    'phone' => $memberData['phone'],
+                    'membership_date' => now()->subMonths(rand(1, 24)),
+                    'membership_status' => 'active',
+                    'is_active' => true,
+                    'bio' => $memberData['bio'],
+                ]
+            );
 
-            $member->roles()->attach(Role::where('name', 'member')->first()->id);
+            $member->roles()->syncWithoutDetaching([Role::where('name', 'member')->first()->id]);
         }
 
         // Create ministries
@@ -149,13 +161,18 @@ class UserSeeder extends Seeder
         ];
 
         foreach ($ministries as $ministryData) {
-            $ministry = Ministry::create($ministryData);
+            $ministry = Ministry::firstOrCreate(
+                ['name' => $ministryData['name']],
+                $ministryData
+            );
             
-            // Add leader as ministry member
-            $ministry->members()->attach($ministryData['leader_id'], [
-                'role' => 'leader',
-                'joined_date' => now()->subMonths(rand(6, 18)),
-            ]);
+            // Add leader as ministry member (only if not already attached)
+            if (!$ministry->members()->where('user_id', $ministryData['leader_id'])->exists()) {
+                $ministry->members()->attach($ministryData['leader_id'], [
+                    'role' => 'leader',
+                    'joined_date' => now()->subMonths(rand(6, 18)),
+                ]);
+            }
 
             // Add some additional members to each ministry
             $additionalMembers = User::where('email', '!=', $ministryData['leader_id'])
@@ -167,10 +184,12 @@ class UserSeeder extends Seeder
                 ->get();
 
             foreach ($additionalMembers as $member) {
-                $ministry->members()->attach($member->id, [
-                    'role' => 'member',
-                    'joined_date' => now()->subMonths(rand(1, 12)),
-                ]);
+                if (!$ministry->members()->where('user_id', $member->id)->exists()) {
+                    $ministry->members()->attach($member->id, [
+                        'role' => 'member',
+                        'joined_date' => now()->subMonths(rand(1, 12)),
+                    ]);
+                }
             }
         }
     }
