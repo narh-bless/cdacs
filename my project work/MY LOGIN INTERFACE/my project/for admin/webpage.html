@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CDACS - Attendance</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f4f6f9;
+      color: #333;
+    }
+
+    /* Header */
+    .header {
+      background: #111;
+      color: white;
+      padding: 15px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo {
+      font-size: 28px;
+      font-weight: bold;
+    }
+    .logo span:first-child { color: orange; }
+    .logo span:nth-child(2) { color: green; }
+    .logo span:nth-child(3) { color: black; background: white; padding: 2px 6px; border-radius: 4px; }
+    .logo span:nth-child(4) { color: red; }
+
+    .user-info {
+      font-size: 16px;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      position: fixed;
+      top: 60px;
+      left: 0;
+      width: 220px;
+      height: 100%;
+      background: #222;
+      color: white;
+      padding-top: 20px;
+    }
+
+    .sidebar a {
+      display: block;
+      color: white;
+      padding: 12px 20px;
+      text-decoration: none;
+      font-size: 16px;
+    }
+
+    .sidebar a:hover, .sidebar a.active {
+      background: red;
+    }
+
+    /* Main */
+    .main {
+      margin-left: 220px;
+      padding: 30px;
+    }
+
+    h2 {
+      margin-top: 0;
+      color: #222;
+    }
+
+    /* Attendance Form */
+    .attendance-form {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      margin-bottom: 30px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+
+    .attendance-form input, .attendance-form select {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 15px;
+    }
+
+    .attendance-form button {
+      background: red;
+      color: white;
+      border: none;
+      padding: 12px 25px;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    .attendance-form button:hover {
+      background: darkred;
+    }
+
+    /* Table */
+    .attendance-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+
+    .attendance-table th, .attendance-table td {
+      padding: 12px 15px;
+      border-bottom: 1px solid #ddd;
+      text-align: left;
+    }
+
+    .attendance-table th {
+      background: #222;
+      color: white;
+    }
+
+    .attendance-table tr:hover {
+      background: #f1f1f1;
+    }
+
+    .actions button {
+      margin-right: 5px;
+      padding: 6px 12px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .edit-btn { background: orange; color: white; }
+    .delete-btn { background: red; color: white; }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <div class="header">
+    <div class="logo">
+      <span>C</span><span>D</span><span>A</span><span>CS</span>
+    </div>
+    <div class="user-info">
+      Welcome, <b>Admin</b> | <a href="login.html" style="color: yellow; text-decoration: none;">Logout</a>
+    </div>
+  </div>
+
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <a href="dashboard.html">📋 Dashboard</a>
+    <a href="members.html">👥 Members</a>
+    <a href="contributions.html">💰 Contributions</a>
+    <a href="attendance.html" class="active">📅 Attendance</a>
+    <a href="#">📢 Announcements</a>
+    <a href="#">📨 Messages</a>
+    <a href="#">⚙ Settings</a>
+  </div>
+
+  <!-- Main -->
+  <div class="main">
+    <h2>Manage Attendance</h2>
+
+    <!-- Add Attendance Form -->
+    <div class="attendance-form">
+      <h3>Mark Attendance</h3>
+      <form>
+        <input type="text" placeholder="Member Name" required>
+        <select required>
+          <option value="">Select Service/Event</option>
+          <option value="Sunday Service">Sunday Service</option>
+          <option value="Bible Study">Bible Study</option>
+          <option value="Prayer Meeting">Prayer Meeting</option>
+          <option value="Special Event">Special Event</option>
+        </select>
+        <input type="date" required>
+        <select required>
+          <option value="">Attendance Status</option>
+          <option value="Present">Present</option>
+          <option value="Absent">Absent</option>
+        </select>
+        <button type="submit">Save Attendance</button>
+      </form>
+    </div>
+
+    <!-- Attendance Records -->
+    <h3>Attendance Records</h3>
+    <table class="attendance-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Member Name</th>
+          <th>Event</th>
+          <th>Date</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>1</td>
+          <td>John Doe</td>
+          <td>Sunday Service</td>
+          <td>2025-09-21</td>
+          <td>Present</td>
+          <td class="actions">
+            <button class="edit-btn">Edit</button>
+            <button class="delete-btn">Delete</button>
+          </td>
+        </tr>
+        <tr>
+          <td>2</td>
+          <td>Mary Smith</td>
+          <td>Bible Study</td>
+          <td>2025-09-18</td>
+          <td>Absent</td>
+          <td class="actions">
+            <button class="edit-btn">Edit</button>
+            <button class="delete-btn">Delete</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</body>
+</html>

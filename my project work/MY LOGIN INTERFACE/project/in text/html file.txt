@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>CDACS - Welcome</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="overlay">
+    <div class="welcome">
+      <h1>WELCOME TO<br>
+      C<span>D</span>ACS</h1>
+      <div class="subtitle">CHURCH DATABASE AND COMMUNICATION SYSTEM</div>
+      <a href="login.html" class="btn">Proceed</a>
+    </div>
+
+    <div class="info">
+      <div class="info-box">
+        <h3>Practical Relevance:</h3>
+        <p>
+          Stores church member details (personal, family, and spiritual data). Tracks attendance and financial contributions. Facilitates communication through SMS, email, or notifications. Generates statistical and financial reports.
+        </p>
+      </div>
+      <div class="info-box">
+        <h3>Academic Relevance:</h3>
+        <p>
+          The project will serve as a case study for applying database management, system analysis, and software development concepts to solve real-life problems in the field of Information Technology and Management Information Systems.
+        </p>
+      </div>
+    </div>
+
+    <div class="footer">
+      <div class="footer-left">
+        <h2>CDACS</h2>
+        <p>
+          CDACS is a computerized platform designed to automate the storage and retrieval of member information, enhance communication, and improve administrative efficiency in church operations.
+        </p>
+      </div>
+      <div class="footer-right">
+        <h3>Help centre</h3>
+        <p>0544891420<br>0202993696</p>
+            </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
