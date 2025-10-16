@@ -19,9 +19,20 @@ return new class extends Migration
             $table->datetime('end_date')->nullable();
             $table->string('location')->nullable();
             $table->foreignId('organizer_id')->constrained('users')->onDelete('cascade');
-            $table->enum('type', ['service', 'meeting', 'celebration', 'other'])->default('other');
+            $table->enum('type', [
+                'meeting', 
+                'service', 
+                'conference', 
+                'workshop', 
+                'prayer_meeting', 
+                'bible_study', 
+                'fellowship', 
+                'outreach', 
+                'celebration', 
+                'other'
+            ])->default('other');
             $table->boolean('is_recurring')->default(false);
-            $table->string('recurrence_pattern')->nullable(); // daily, weekly, monthly, yearly
+            $table->string('recurrence_pattern')->nullable(); // daily, weekly, biweekly, monthly, yearly
             $table->boolean('is_published')->default(false);
             $table->timestamps();
         });

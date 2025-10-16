@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\EventController;
 use App\Http\Controllers\Api\MessageController;
 use App\Http\Controllers\Api\ContributionController;
 use App\Http\Controllers\Api\MinistryController;
+use App\Http\Controllers\Api\DashboardController;
 
 // Authentication routes
 Route::prefix('auth')->group(function () {
@@ -22,42 +23,48 @@ Route::prefix('auth')->group(function () {
 // Protected routes
 Route::middleware('jwt.auth')->group(function () {
     
+    // Dashboard routes
+    Route::get('dashboard/user', [DashboardController::class, 'userStats']);
+    Route::get('dashboard/administrator', [DashboardController::class, 'adminStats']);
+    Route::get('dashboard/pastor', [DashboardController::class, 'pastorStats']);
+    Route::get('dashboard/finance', [DashboardController::class, 'financeStats']);
+    
     // User management routes
-    Route::apiResource('users', UserController::class);
     Route::get('users/{user}/contributions', [UserController::class, 'contributions']);
     Route::get('users/{user}/ministries', [UserController::class, 'ministries']);
+    Route::apiResource('users', UserController::class);
     
     // Announcement routes
-    Route::apiResource('announcements', AnnouncementController::class);
     Route::get('announcements/published', [AnnouncementController::class, 'published']);
     Route::post('announcements/{announcement}/publish', [AnnouncementController::class, 'publish']);
+    Route::apiResource('announcements', AnnouncementController::class);
     
     // Event routes
-    Route::apiResource('events', EventController::class);
     Route::get('events/upcoming', [EventController::class, 'upcoming']);
     Route::get('events/published', [EventController::class, 'published']);
     Route::post('events/{event}/publish', [EventController::class, 'publish']);
+    Route::apiResource('events', EventController::class);
     
     // Message routes
-    Route::apiResource('messages', MessageController::class);
     Route::get('messages/inbox', [MessageController::class, 'inbox']);
     Route::get('messages/sent', [MessageController::class, 'sent']);
     Route::post('messages/{message}/read', [MessageController::class, 'markAsRead']);
     Route::post('messages/broadcast', [MessageController::class, 'broadcast']);
+    Route::apiResource('messages', MessageController::class);
     
     // Contribution routes
-    Route::apiResource('contributions', ContributionController::class);
     Route::get('contributions/reports/summary', [ContributionController::class, 'summary']);
     Route::get('contributions/reports/by-type', [ContributionController::class, 'byType']);
     Route::get('contributions/reports/by-ministry', [ContributionController::class, 'byMinistry']);
     Route::get('contributions/reports/by-date-range', [ContributionController::class, 'byDateRange']);
+    Route::apiResource('contributions', ContributionController::class);
     
     // Ministry routes
-    Route::apiResource('ministries', MinistryController::class);
     Route::get('ministries/{ministry}/members', [MinistryController::class, 'members']);
     Route::post('ministries/{ministry}/members', [MinistryController::class, 'addMember']);
     Route::delete('ministries/{ministry}/members/{user}', [MinistryController::class, 'removeMember']);
     Route::get('ministries/{ministry}/contributions', [MinistryController::class, 'contributions']);
+    Route::apiResource('ministries', MinistryController::class);
 });
 
 // Role-based protected routes
@@ -71,7 +78,7 @@ Route::middleware(['jwt.auth', 'role:pastor,administrator'])->group(function () 
     Route::delete('events/{event}', [EventController::class, 'destroy']);
 });
 
-Route::middleware(['jwt.auth', 'role:finance_committee,administrator'])->group(function () {
+Route::middleware(['jwt.auth', 'role:pastor,administrator,treasurer'])->group(function () {
     Route::post('contributions', [ContributionController::class, 'store']);
     Route::put('contributions/{contribution}', [ContributionController::class, 'update']);
     Route::delete('contributions/{contribution}', [ContributionController::class, 'destroy']);
